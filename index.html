@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+    <style type="text/css">
+        html, body { margin: 0; padding: 0; border: 0 none; height: 100%; }
+        #container { width: 100%; min-height: 100%; }
+    </style>
+</head>
+<body>
+    <div id="container">
+        <h1>Drop an image anywhere on this page</h1>
+    </div>
+    <script type="text/javascript">
+
+        var el = document.getElementById('container');
+        var files = [];
+        var image = new Image;
+        var URL_ = window.URL || window.webkitURL;
+
+        image.addEventListener('load', function (e) {
+
+            // Free link to the file
+            URL_.revokeObjectURL(image.src);
+
+            // Draw image
+            var canvas = document.createElement('canvas');
+            canvas.width = 100;
+            canvas.height = 100;
+            canvas.getContext('2d').drawImage(image, 0, 0, 100, 100);
+
+            el.appendChild(canvas);
+
+            // Process next
+            generatePreview();
+        }, false);
+
+        el.addEventListener('dragenter', function (e) {
+            e.preventDefault();
+        }, false);
+
+        el.addEventListener('dragover', function (e) {
+            e.preventDefault();
+        }, false);
+
+        el.addEventListener('drop', function (e) {
+            e.preventDefault();
+            files = Array.prototype.slice.call(e.dataTransfer.files, 0);
+
+            generatePreview();
+        }, false);
+
+        function generatePreview() {
+            if (files.length == 0) return;
+            image.src = URL_.createObjectURL(files.shift());
+        }
+
+    </script>
+</body>
+</html>
