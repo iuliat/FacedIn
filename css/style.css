@@ -407,3 +407,9 @@ label.checkbox {
 pre code {
   background: transparent;
 }
+
+
+
+input[type=input] {
+  color: #333 !important;
+}

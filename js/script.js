@@ -1,53 +1,163 @@
-
-
+var imageLoader = document.getElementById('imageLoader');
+imageLoader.addEventListener('change', handleImage, false);
 var canvas = document.getElementById('canvas');
 var ctx = canvas.getContext('2d');
 
 
-function draw() {
-	// TODO check if valid URL before doing this function 
-
-	var img = new Image;
-	img.onload = draw;
-	var url = document.getElementById('image-url').value;
-	img.src = url + '?' + new Date().getTime();
-	img.setAttribute('crossOrigin', '');
-
-
-
-	// TODO resize image
-
-	var dArr = [-1,-1, 0,-1, 1,-1, -1,0, 1,0, -1,1, 0,1, 1,1]; // offset array
-	// thickness scale
-	var s = 1;
-  	// final position
-	var x = 5;
-	var y = 5;
-
-	// draw images at offsets from the array scaled by s
-	for(var i = 0; i < dArr.length; i += 2) {
-		ctx.drawImage(img, x + dArr[i]*s, y + dArr[i+1]*s);
-	}
-
-	// fill with color
-	ctx.globalCompositeOperation = "source-in";
-	ctx.fillStyle = "red";
-	ctx.fillRect(0,0,canvas.width, canvas.height);
-
-	// draw original image in normal mode
-	ctx.globalCompositeOperation = "source-over";
-	ctx.drawImage(img, x, y);
-
-	console.log("image data: " + ctx.getImageData(10,10,50,50));
+function handleImage(e){
+    var reader = new FileReader();
+    reader.onload = function(event){
+        var img = new Image();
+        img.onload = function(){
+            canvas.width = img.width;
+            canvas.height = img.height;
+            ctx.drawImage(img,0,0);
+        }
+        img.src = event.target.result;
+    }
+    reader.readAsDataURL(e.target.files[0]);
 }
 
+var imageAsBase64 = canvas.toDataURL();
 
 
 
-function outline() {
-	var root = (375,375);
-    ctx.beginPath();
-	ctx.lineT
-o
+function edgeDetector(){
+  
+  // Variables
+  this.img = undefined;
+  this.imgElement = undefined;
+  this.ctx = undefined;
+  this.canvasElement = undefined;
+  this.rawCanvas = undefined;
+  this.rawctx = undefined;
+  this.ctxDimensions = {
+    width: undefined,
+    height:undefined
+  };
+  this.pixelData = undefined;
+  this.threshold = 30;
+  this.pointerColor = 'rgba(255,0,0,1)';
+  
+  
+  this.init = function(){
+    // Build the canvas
+    var width = $(this.imgElement).width();
+    var height = $(this.imgElement).height();
+    $("<canvas id=\"rawData\" width=\""+width+"\" height=\""+height+"\"></canvas>").insertAfter(this.imgElement);
+    $("<canvas id=\"layer\" width=\""+width+"\" height=\""+height+"\"></canvas>").insertAfter(this.imgElement);
 
+    this.canvasElement = $("#layer")[0];
+    this.rawCanvas = $("#rawData")[0];
+    this.ctx = this.canvasElement.getContext('2d');
+    this.rawctx = this.rawCanvas.getContext('2d');
+
+    // Store the Canvas Size
+    this.ctxDimensions.width = width;
+    this.ctxDimensions.height = height;
+  };
+  
+  this.findEdges = function(){
+    this.copyImage();
+    this.coreLoop();
+  };
+  
+  this.copyImage = function(){
+    this.rawctx.clearRect(0,0,this.ctxDimensions.width,this.ctxDimensions.height);
+    this.ctx.drawImage(this.imgElement,0,0);
+
+    //Grab the Pixel Data, and prepare it for use
+    this.pixelData = this.ctx.getImageData(0,0,this.ctxDimensions.width, this.ctxDimensions.height);
+  };
+  
+  this.coreLoop = function(){
+    var x = 0;
+    var y = 0;
+
+    var left = undefined;
+    var top = undefined;
+    var right = undefined;
+    var bottom = undefined;
+
+    for(y=0;y<this.pixelData.height;y++){
+        for(x=0;x<this.pixelData.width;x++){
+            // get this pixel's data
+            // currently, we're looking at the blue channel only.
+            // Since this is a B/W photo, all color channels are the same.
+            // ideally, we would make this work for all channels for color photos.
+            index = (x + y * this.ctxDimensions.width) * 4;
+            pixel = this.pixelData.data[index+2];
+
+            // Get the values of the surrounding pixels
+            // Color data is stored [r,g,b,a][r,g,b,a]
+            // in sequence.
+            left = this.pixelData.data[index-4];
+            right = this.pixelData.data[index+2];
+            top = this.pixelData.data[index-(this.ctxDimensions.width*4)];
+            bottom = this.pixelData.data[index+(this.ctxDimensions.width*4)];
+
+            //Compare it all.
+            // (Currently, just the left pixel)
+            if(pixel>left+this.threshold){
+                this.plotPoint(x,y);
+            }
+            else if(pixel<left-this.threshold){
+                this.plotPoint(x,y);
+            }
+            else if(pixel>right+this.threshold){
+                this.plotPoint(x,y);
+            }
+            else if(pixel<right-this.threshold){
+                this.plotPoint(x,y);
+            }
+            else if(pixel>top+this.threshold){
+                this.plotPoint(x,y);
+            }
+            else if(pixel<top-this.threshold){
+                this.plotPoint(x,y);
+            }
+            else if(pixel>bottom+this.threshold){
+                this.plotPoint(x,y);
+            }
+            else if(pixel<bottom-this.threshold){
+                this.plotPoint(x,y);
+            }
+        }
+    }
+  };
+  
+  this.plotPoint = function(x,y){
+      this.ctx.beginPath();
+      this.ctx.arc(x, y, 0.5, 0, 2 * Math.PI, false);
+      this.ctx.fillStyle = 'red';
+      this.ctx.fill();
+      this.ctx.beginPath();
+
+      // Copy onto the raw canvas
+      // this is probably the most useful application of this,
+      // as you would then have raw data of the edges that can be used.
+
+      this.rawctx.beginPath();
+      this.rawctx.arc(x, y, 0.5, 0, 2 * Math.PI, false);
+      this.rawctx.fillStyle = 'red';
+      this.rawctx.fill();
+      this.rawctx.beginPath();
+  };
 }
+
+var edgeDetector = new edgeDetector();
+
+
+// $(document).ready(function(){
+go = function() {
+  // Run at start
+  // edgeDetector.img = imageAsBase64;
+  edgeDetector.imgElement = $('.image')[0];
+  edgeDetector.init();
+  edgeDetector.findEdges();
+  updateThreshold = function () {
+    edgeDetector.threshold = $('#threshold').val();
+    edgeDetector.findEdges();
+  };
+};
+
