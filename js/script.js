@@ -3,6 +3,10 @@ imageLoader.addEventListener('change', handleImage, false);
 var canvas = document.getElementById('canvas');
 var ctx = canvas.getContext('2d');
 
+// TODO:
+// crop image to square aspect ratio
+// resize image to 500 x 500
+// see https://foliotek.github.io/Croppie/
 
 function handleImage(e){
     var reader = new FileReader();
@@ -21,6 +25,10 @@ function handleImage(e){
 var imageAsBase64 = canvas.toDataURL();
 
 
+// global params because i don't know how variable scoping works bc
+//  i didn't pay attention to inheritance lectures
+// does js have inheritance? props and super and shit is some es6 bs
+var thicknessParam = 20;
 
 function edgeDetector(){
   
@@ -80,6 +88,8 @@ function edgeDetector(){
   this.coreLoop = function(){
     var x = 0;
     var y = 0;
+    var rootX = this.width/2;
+    var rootY = this.height;
 
     var left = undefined;
     var top = undefined;
@@ -151,13 +161,13 @@ function edgeDetector(){
       this.rawctx.beginPath();
 
       // draw as tree
-
       this.treectx.beginPath();
-      this.treectx.arc(x, y, 0.5, 0, 2 * Math.PI, false);
-      this.treectx.fillStyle = 'red';
-      this.treectx.fill();
+      if (x % thicknessParam === 0 && y % thicknessParam === 0){
+        this.treectx.moveTo(x, y);
+        this.treectx.lineTo(155 ,311);//this.rootX - y, this.rootY - x);
+        this.treectx.stroke();
+      }
       this.treectx.beginPath();
-
   };
 }
 

@@ -13,7 +13,11 @@ function draw() {
       var pointY = points[i][1];
     	ctx.moveTo(pointX, pointY);
       ctx.lineTo(rootX, rootY);
+
     }
     ctx.stroke();
   }
 }
+
+
+ctx.arc(x, y, 0.5, 0, 2 * Math.PI, false);
