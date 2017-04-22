@@ -29,8 +29,12 @@ function edgeDetector(){
   this.imgElement = undefined;
   this.ctx = undefined;
   this.canvasElement = undefined;
-  this.rawCanvas = undefined;
   this.rawctx = undefined;
+  this.rawCanvas = undefined;
+  this.treectx = undefined;
+  this.treeCanvas = undefined;
+
+
   this.ctxDimensions = {
     width: undefined,
     height:undefined
@@ -44,13 +48,16 @@ function edgeDetector(){
     // Build the canvas
     var width = $(this.imgElement).width();
     var height = $(this.imgElement).height();
+    $("<canvas id=\"tree\" width=\""+width+"\" height=\""+height+"\"></canvas>").insertAfter(this.imgElement); 
     $("<canvas id=\"rawData\" width=\""+width+"\" height=\""+height+"\"></canvas>").insertAfter(this.imgElement);
     $("<canvas id=\"layer\" width=\""+width+"\" height=\""+height+"\"></canvas>").insertAfter(this.imgElement);
 
-    this.canvasElement = $("#layer")[0];
     this.rawCanvas = $("#rawData")[0];
-    this.ctx = this.canvasElement.getContext('2d');
+    this.canvasElement = $("#layer")[0];
+    this.treeCanvas = $("#tree")[0];
     this.rawctx = this.rawCanvas.getContext('2d');
+    this.ctx = this.canvasElement.getContext('2d');
+    this.treectx = this.treeCanvas.getContext('2d');
 
     // Store the Canvas Size
     this.ctxDimensions.width = width;
@@ -142,11 +149,19 @@ function edgeDetector(){
       this.rawctx.fillStyle = 'red';
       this.rawctx.fill();
       this.rawctx.beginPath();
+
+      // draw as tree
+
+      this.treectx.beginPath();
+      this.treectx.arc(x, y, 0.5, 0, 2 * Math.PI, false);
+      this.treectx.fillStyle = 'red';
+      this.treectx.fill();
+      this.treectx.beginPath();
+
   };
 }
 
 var edgeDetector = new edgeDetector();
-
 
 // $(document).ready(function(){
 go = function() {
@@ -162,4 +177,3 @@ go = function() {
   });
 
 };
-

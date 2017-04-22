@@ -6,38 +6,76 @@
     <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
     <link rel="stylesheet" type="text/css" href="css/bootstrap-theme.min.css">
     <link rel="stylesheet" type="text/css" href="css/style.css">
-	
+
 </head>
 <body>
     <div class="container-fluid" id="container"> <!-- style="width:100%;height:100%; position:absolute;" ondrop="drop(event)" ondragover="allowDrop(event)"> -->
         <div class="row">
-            <div class="col-md-4">
-                <!-- <h1><strike>Drop an image anywhere in this div</strike></h1>-->
+            <div class="col-md-12">
                 <h1>FacedIn</h1> 
+                <hr />
+            </div>
+            <div class="col-md-3">
+                <!-- <h1><strike>Drop an image anywhere in this div</strike></h1>-->
+                <h2>
+                    Let's go...
+                </h2>
+                <hr />
                 <form class="form-inline">
                     <div class="form-group">
-                        <span class="btn btn-default btn-file">
+                        <h3>Step 1:</h3>
+                        <span class="btn btn-default btn-file" onclick="$('#image-manip').show()">
                             Upload image
                             <input type="file" id="imageLoader" name="imageLoader" />
                         </span>
-                        <br /><br />
-                        <span onclick="go()" class="btn btn-default">
-                            Generate outline
+                        <br />
+                        <h4 class="indent">   or</h4>
+                        <span disabled class="btn btn-default btn-file" >
+                        <!-- onclick="$('#photoinput').toggle(); $('#image-manip').show()"> -->
+                            Take photo (needs SSL site)
                         </span>
-                        <br /><br />
-                        <p>Threshold: <input type="range" id="threshold" value="30" min="0" max="50"></p>
-                        </br />
-                    </div>
-                </form>
-            </div>
-            <div class="col-md-8">
-                <h1>Result</h1>
-                <canvas id="canvas" class="image"></canvas>
+                        <br />
+                        <div id="photoinput" style="display:none;">
+                            <h2>
+                                Snap a picture!
+                            </h2>
+                            <p>
+                                Make sure you've got a clear background behind you!
+                            </p>
+                            <video id="video" width="640" height="480" autoplay></video>
+                            <button id="snap">Snap Photo</button>
+                            <canvas id="video-canvas" width="640" height="480"></canvas>
 
-            </div>
+                        </div>
+                        <br />
+                        <div id="image-manip" style="display:none;">
+                            <h3>Step 2:</h3>
+                            <span onclick="go(); $('#tree-gen').show()" class="btn btn-default">
+                                Generate outline
+                            </span>
+                            <br /><br />
+                            <p>Threshold: <input type="range" id="threshold" value="30" min="0" max="50"></p>
+                        </br />
+                        <p>(when tweaking threshold, you might gotta wait a few secs as it updates...)</p>
+                        <br />
+                        <div id="tree-gen" style="display:none;">
+                            <h3>Step 3:</h3>
+                            <p>Random seed: <input type="number" id="random-seed" value="0.5" min="0" max="1" step="0.1"></p>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="col-md-9">
+           <!-- <div class="affix"> -->
+                <h2>Result</h2>
+                <hr />
+                <canvas id="canvas" class="image"></canvas>
+            <!-- </div> -->
         </div>
     </div>
-    <script src='http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js'></script>
-    <script type="text/javascript" src="js/script.js"></script>
+</div>
+<script src='http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js'></script>
+<script type="text/javascript" src="js/script.js"></script>
 </body>
 </html>

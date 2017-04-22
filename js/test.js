@@ -2,7 +2,7 @@ function draw() {
   var canvas = document.getElementById('canvas');
   if (canvas.getContext) {
     var ctx = canvas.getContext('2d');    
-    var rootX = 150;
+    var rootX = 200;
     var rootY = 300;
     
     var points = [[-25, 225], [0, 200], [25, 175], [50, 150], [75, 125], [100, 100], [125, 75], [150, 50], [175, 25], [200, 0], [225, -25]]
