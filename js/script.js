@@ -150,14 +150,16 @@ var edgeDetector = new edgeDetector();
 
 // $(document).ready(function(){
 go = function() {
+
   // Run at start
   // edgeDetector.img = imageAsBase64;
   edgeDetector.imgElement = $('.image')[0];
   edgeDetector.init();
   edgeDetector.findEdges();
-  updateThreshold = function () {
-    edgeDetector.threshold = $('#threshold').val();
+   $('#threshold').change(function(){
+    edgeDetector.threshold = $(this).val();
     edgeDetector.findEdges();
-  };
+  });
+
 };
 

@@ -12,19 +12,20 @@
     <div class="container-fluid" id="container"> <!-- style="width:100%;height:100%; position:absolute;" ondrop="drop(event)" ondragover="allowDrop(event)"> -->
         <div class="row">
             <div class="col-md-4">
-                <h1><strike>Drop an image anywhere in this div</strike></h1>
-                <h1></h1>
+                <!-- <h1><strike>Drop an image anywhere in this div</strike></h1>-->
+                <h1>FacedIn</h1> 
                 <form class="form-inline">
                     <div class="form-group">
-                        <input type="file" id="imageLoader" name="imageLoader" />
+                        <span class="btn btn-default btn-file">
+                            Upload image
+                            <input type="file" id="imageLoader" name="imageLoader" />
+                        </span>
+                        <br /><br />
                         <span onclick="go()" class="btn btn-default">
                             Generate outline
                         </span>
-                        <p>Threshold:<input type="input" id="threshold" value="30"></p>
-                        <br />
-                        <span onclick="go()" class="btn btn-default">
-                            Update outline
-                        </span>
+                        <br /><br />
+                        <p>Threshold: <input type="range" id="threshold" value="30" min="0" max="50"></p>
                         </br />
                     </div>
                 </form>
