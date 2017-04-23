@@ -29,10 +29,6 @@ var imageAsBase64 = canvas.toDataURL();
 //  i didn't pay attention to inheritance lectures
 // does js have inheritance? props and super and shit is some es6 bs
 var thicknessParam = 20;
-var points = [];
-var globalWidth;
-var globalHeight;
-
 
 function edgeDetector(){
   
@@ -43,7 +39,8 @@ function edgeDetector(){
   this.canvasElement = undefined;
   this.rawctx = undefined;
   this.rawCanvas = undefined;
- 
+  this.treectx = undefined;
+  this.treeCanvas = undefined;
 
 
   this.ctxDimensions = {
@@ -59,22 +56,20 @@ function edgeDetector(){
     // Build the canvas
     var width = $(this.imgElement).width();
     var height = $(this.imgElement).height();
-    // $("<canvas id=\"tree\" width=\""+width+"\" height=\""+height+"\"></canvas>").insertAfter(this.imgElement); 
+    $("<canvas id=\"tree\" width=\""+width+"\" height=\""+height+"\"></canvas>").insertAfter(this.imgElement); 
     $("<canvas id=\"rawData\" width=\""+width+"\" height=\""+height+"\"></canvas>").insertAfter(this.imgElement);
     $("<canvas id=\"layer\" width=\""+width+"\" height=\""+height+"\"></canvas>").insertAfter(this.imgElement);
 
     this.rawCanvas = $("#rawData")[0];
     this.canvasElement = $("#layer")[0];
+    this.treeCanvas = $("#tree")[0];
     this.rawctx = this.rawCanvas.getContext('2d');
     this.ctx = this.canvasElement.getContext('2d');
-    // this.treeCanvas = $("#tree")[0];
-    // this.treectx = this.treeCanvas.getContext('2d');
+    this.treectx = this.treeCanvas.getContext('2d');
 
     // Store the Canvas Size
     this.ctxDimensions.width = width;
     this.ctxDimensions.height = height;
-    globalWidth = width;
-    globalHeight = height;
   };
   
   this.findEdges = function(){
@@ -93,8 +88,8 @@ function edgeDetector(){
   this.coreLoop = function(){
     var x = 0;
     var y = 0;
-    // var rootX = this.width/2;
-    // var rootY = this.height;
+    var rootX = this.width/2;
+    var rootY = this.height;
 
     var left = undefined;
     var top = undefined;
@@ -165,10 +160,14 @@ function edgeDetector(){
       this.rawctx.fill();
       this.rawctx.beginPath();
 
-      // add points for tree
+      // draw as tree
+      this.treectx.beginPath();
       if (x % thicknessParam === 0 && y % thicknessParam === 0){
-        points.push([x, y]);
+        this.treectx.moveTo(x, y);
+        this.treectx.lineTo(155 ,311);//this.rootX - y, this.rootY - x);
+        this.treectx.stroke();
       }
+      this.treectx.beginPath();
   };
 }
 
@@ -176,75 +175,15 @@ var edgeDetector = new edgeDetector();
 
 // $(document).ready(function(){
 go = function() {
+
   // Run at start
   // edgeDetector.img = imageAsBase64;
   edgeDetector.imgElement = $('.image')[0];
   edgeDetector.init();
   edgeDetector.findEdges();
    $('#threshold').change(function(){
-    points.length=0;
     edgeDetector.threshold = $(this).val();
     edgeDetector.findEdges();
   });
 
 };
-
-
-go2 = function() {
-  if ($('#tree')) {
-    $('#tree').remove();
-  }
-  $("<canvas id=\"tree\" width=\""+500+"\" height=\""+500+"\"></canvas>").insertAfter($('#rawData'));
-  treeCanvas = $("#tree")[0];
-  treectx = treeCanvas.getContext('2d');
-  treectx.beginPath();
-  treectx.moveTo(globalWidth/2, globalHeight);
-  treectx.lineTo(globalWidth/2, (2 * globalHeight) / 10);
-
- 
-  var drawBranches = function(startX, startY, depth) {
-    resultX1 = startX-10; 
-    resultX2 = startX+10;
-    resultY = startY - 10;
-    treectx.lineTo(resultX1, resultY);
-    treectx.lineTo(resultX2, resultY);
-    if (depth < 7) {
-      drawBranches(resultX1, resultY, depth+1); // left branch
-      drawBranches(resultX2, resultY, depth+1); // right branch
-    }
-  }
-
-  drawBranches(globalWidth/2, (2 * globalHeight) / 3, 0);
-
-
-  treectx.stroke();
-
-
-  // treectx.moveTo(globalWidth/2, (2 * globalHeight) / 3);
-  //   var h = 
-  //   for (var j = 0; j <3; j++) {
-
-  //   }
-  // }
-  // // unless reach boundary segment
-  // // split into 3 and draw at some other angles
-  // // treectx.rotate(45 * Math.PI / 180);
-  // treectx.lineTo(0, 0);
-  // treectx.moveTo(globalWidth/2, (2 * globalHeight) / 3);
-  // treectx.lineTo(globalWidth, 0);
-
-  
-  // treectx.rotate(-45 * Math.PI / 180);
-
-
-
-  // treectx.stroke();
-
-  // for (var i = 0; i < points.length; i++){
-  //   var x = points[i][0];
-  //   var y = points[i][1];
-  //   treectx.moveTo(x, y);
-  //   treectx.lineTo(rootX, rootY);
-  //   treectx.stroke();
-  // }
-}

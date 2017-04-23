@@ -5,6 +5,7 @@
     <title></title>
     <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
     <link rel="stylesheet" type="text/css" href="css/bootstrap-theme.min.css">
+    <link rel="stylesheet" type="text/css" href="css/croppie.css">
     <link rel="stylesheet" type="text/css" href="css/style.css">
 
 </head>
@@ -26,7 +27,7 @@
                         <h3>Step 1:</h3>
                         <span class="btn btn-default btn-file" onclick="$('#image-manip').show()">
                             Upload image
-                            <input type="file" id="imageLoader" name="imageLoader" />
+                            <input type="file" id="imageLoader" name="imageLoader" accept="image/*" />
                         </span>
                         <br />
                         <h4 class="indent">   or</h4>
@@ -54,14 +55,20 @@
                                 Generate outline
                             </span>
                             <br /><br />
-                            <p>Threshold: <input type="range" id="threshold" value="30" min="0" max="50"></p>
+                            <p>...then tweak threshold: <input type="range" id="threshold" value="30" min="0" max="50"></p>
                         </br />
                         <p>(when tweaking threshold, you might gotta wait a few secs as it updates...)</p>
                         <br />
                         <div id="tree-gen" style="display:none;">
                             <h3>Step 3:</h3>
-                            <p>Click on the image to set where the root is. By default root is at bottom centre of image.</p>
-                            <p>Random seed: <input type="number" id="random-seed" value="0.5" min="0" max="1" step="0.1"></p>
+                            <p>Set thickness <input type="number" id="thickness" value="10" min="5" max="30"></p>
+                            <p>(Lower = more lines = potentially slower)</p>
+                            <p>...and then:</p>
+                            <span onclick="go2()" class="btn btn-default">
+                                Draw tree
+                            </span>
+                            <!-- <p>Click on the image to set where the root is. By default root is at bottom centre of image.</p>
+                            <p>Random seed: <input type="number" id="random-seed" value="0.5" min="0" max="1" step="0.1"></p> -->
                         </div>
                     </div>
                 </div>
@@ -77,6 +84,7 @@
     </div>
 </div>
 <script src='http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js'></script>
+<script type="text/javascript" src="js/croppie.min.js"></script>
 <script type="text/javascript" src="js/script.js"></script>
 </body>
 </html>
